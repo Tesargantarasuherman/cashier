@@ -4,7 +4,25 @@ const connection = require('../../connection');
 
 
     exports.index =(req,res)=>{
-        response.ok('Berhasil dijalankan',res)
+        let id = req.body.id
+        let query ="SELECT * FROM ?? WHERE ??=?"
+        let table = ["user","id",id]
+        
+        console.log(id);
+
+        query = mysql.format(query,table);
+        connection.query(query,function(error,rows){
+            if(error){
+                throw error
+            }
+            else{
+                return res.json({
+                    success:true,
+                    mesagges:"Data Get Successfully",
+                    data:rows
+                })
+            }
+        })
     }
 
     exports.register =(req,res)=>{

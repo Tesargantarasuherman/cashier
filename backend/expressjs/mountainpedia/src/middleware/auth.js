@@ -8,7 +8,10 @@ let ip = require('ip');
 // send email verification
 const nodemailer = require('nodemailer');
 const Mailgen = require('mailgen');
-const {EMAIL,PASSWORD} = require('../../env')
+const {
+    EMAIL,
+    PASSWORD
+} = require('../../env')
 // controller untuk register
 exports.registrasi = async function (req, res) {
     let post = {
@@ -19,7 +22,7 @@ exports.registrasi = async function (req, res) {
     }
 
     let transport = nodemailer.createTransport({
-        service:'gmail',
+        service: 'gmail',
         auth: {
             user: EMAIL,
             pass: PASSWORD
@@ -27,67 +30,72 @@ exports.registrasi = async function (req, res) {
     });
 
     let MailGenerator = new Mailgen({
-        theme:'default',
-        product:{
-            name:"Mailgen",
-            link:'https://mailgen.js/'
+        theme: 'default',
+        product: {
+            name: "Mailgen",
+            link: 'https://mailgen.js/'
         }
-    }) 
+    })
 
-    let response ={
-        body:{
-            name:"MOUNTAINPEDIA",
-            intro:'VERIFICATION YOUR ACCOUNT',
-            table:{
-                data:{
-                    item:"lorem"
+    let response = {
+        body: {
+            name: "MOUNTAINPEDIA",
+            intro: 'VERIFICATION YOUR ACCOUNT',
+            table: {
+                data: {
+                    item: "lorem"
                 }
             },
-            outro:"Enjoy"
+            outro: "Enjoy"
         }
     }
     let mail = MailGenerator.generate(response);
 
     let message = {
-        from:EMAIL,
-        to:post.email,
-        subject:"VERIFICATION",
-        html:mail
+        from: EMAIL,
+        to: post.email,
+        subject: "VERIFICATION",
+        html: mail
     }
 
-    transport.sendMail(message).then(()=>{
-    var query = "SELECT email FROM ?? WHERE ??=?";
-    var table = ["user", "email", post.email];
+    transport.sendMail(message).then(() => {
+        var query = "SELECT email FROM ?? WHERE ??=?";
+        var table = ["user", "email", post.email];
 
-    query = mysql.format(query, table);
+        query = mysql.format(query, table);
 
-    connection.query(query,function (error, rows) {
-        if (error) {
-            throw error;
-        } else {
-            if(rows.length == 0){
-                connection.query(`INSERT INTO user (name,email,password,role) VALUES(?,?,?,?)`,
-                [post.name,post.email,post.password,post.role],
-                function (error, rows, fields) {
-                    if (error) {
-                        throw error
-                    } else {
-                        return res.status(201).json({message:`email has been send to your email`});
-                    }
-                });
+        connection.query(query, function (error, rows) {
+            if (error) {
+                throw error;
+            } else {
+                if (rows.length == 0) {
+                    connection.query(`INSERT INTO user (name,email,password,role) VALUES(?,?,?,?)`,
+                        [post.name, post.email, post.password, post.role],
+                        function (error, rows, fields) {
+                            if (error) {
+                                throw error
+                            } else {
+                                return res.status(201).json({
+                                    message: `email has been send to your email`
+                                });
+                            }
+                        });
+                } else {
+                    return res.status(201).json({
+                        message: `Email Sudah Terdaftar`
+                    });
+                }
             }
-            else{
-                return res.status(201).json({message:`Email Sudah Terdaftar`});
-            }
-        }
-    });
-    
-    }).catch(error=>{
-            return res.status(500).json({error})
-    })  
-      
+        });
 
-    
+    }).catch(error => {
+        return res.status(500).json({
+            error
+        })
+    })
+
+
+
 }
 exports.login = function (req, res) {
     let post = {
@@ -100,20 +108,22 @@ exports.login = function (req, res) {
     query = mysql.format(query, table);
     connection.query(query, function (error, rows) {
         if (error) {
-             throw error ;
+            throw error;
         } else {
-            if(rows.length ==1){
+            if (rows.length == 1) {
                 let data_user = rows;
                 let expired = 1440
 
-                let token = jwt.sign({rows},config.secret,{
+                let token = jwt.sign({
+                    rows
+                }, config.secret, {
                     expiresIn: expired
                 })
 
                 let post = {
                     id_user: rows[0].id,
                     access_token: token,
-                    ip_address : ip.address()
+                    ip_address: ip.address()
                 }
                 // set ke access_token
                 var query = "INSERT INTO ?? SET ?";
@@ -121,28 +131,68 @@ exports.login = function (req, res) {
 
                 query = mysql.format(query, table);
                 connection.query(`INSERT INTO access_token (id_user,access_token,ip_address) VALUES(?,?,?)`,
-                [post.id_user,post.access_token,post.ip_address],function(error,rows){
-                    if(error){
-                        console.log(error)
-                    }
-                    else{
-                        res.json({
-                            success:true,
-                            message:'Token successfully',
-                            token:access_token,
-                            expired:expired,
-                            data_user
-                        })
-                    }
-                })
+                    [post.id_user, post.access_token, post.ip_address],
+                    function (error, rows) {
+                        if (error) {
+                            console.log(error)
+                        } else {
+                            res.json({
+                                success: true,
+                                message: 'Login successfully',
+                                token: post.access_token,
+                                expired: expired,
+                                data_user
+                            })
+                        }
+                    })
 
-            }
-            else{
-              res.json({'Error':true,"Message":"email atau pass salah"});  
+            } else {
+                res.json({
+                    error: true,
+                    message: "email atau pass salah"
+                });
             }
         }
     })
 }
+exports.verificationToken = function (req, res) {
+
+    let token = req.body.token;
+
+    jwt.verify(token, config.secret, function (err, decoded) {
+        if (err) {
+            return res.status(201).json({
+                error: true,
+                message: 'Token Expired',
+                isLogin:false
+            });
+        } else {
+            return res.status(201).json({
+                error: false,
+                message: 'Token Active',
+                isLogin:true,
+                data:{
+                    token:token,
+                    user :decoded?.rows?.[0],
+                }
+            });        
+        }
+    })
+
+
+}
 exports.admin = function (req, res) {
-    response.ok('Page for admin',res);
+    let id = req.params.id;
+
+    let query = "SELECT * FROM ?? WHERE ??=?";
+    let table = ["user", "id", id];
+
+    query = mysql.format(query, table);
+    connection.query(query, function (error, rows) {
+        if (error) {
+                throw error;
+        } else {
+                response.ok('Page for admin', res)
+        }
+    })
 }
