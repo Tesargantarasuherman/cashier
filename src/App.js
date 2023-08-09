@@ -11,23 +11,33 @@ function App() {
   const [active, setActive] = useState(null)
   const [product, setProduct] = useState([])
   const [item, setItem] = useState([])
+  const [subtotal,setSubtotal] = useState(0)
+  const [ppn,setPpn] = useState(0)
 
   let products = [
     {
       id: 1,
       name: "Chicken Roasted With Peanut Sauce",
-      price: 50000
+      price: 50000,
+      stock:10
     },
     {
       id: 2,
       name: "Beef Roasted With Peanut Sauce",
-      price: 80000
+      price: 80000,
+      stock:5
     }
   ]
 
   useEffect(() => {
-    console.log(item)
-  }, [active])
+    let total = 0;
+    item.map(i=>{
+      total += i.qty * i.price
+    })
+    setSubtotal(total)
+    setPpn(total * 0.05)
+
+  }, [active,item])
 
   const renderActive = (param) => {
     if (active == param) {
@@ -243,17 +253,18 @@ function App() {
                     <img className='flex-initial w-20 rounded-xl' src="https://img.freepik.com/free-photo/baked-chicken-wings-asian-style-tomatoes-sauce-plate_2829-10657.jpg?w=2000&t=st=1691486190~exp=1691486790~hmac=57b5e5f0d9431f1976ed01270df85ca08a576b24a53972bd1078166b4c72a511" alt="" srcset="" />
                     <div className="name w-1/2">
                       <p>{i.name}</p>
-                      <p>{i.price}</p>
+                      <p>Rp. {i?.price?.toLocaleString('en-US')}</p>
                     </div>
-                    <div className="quantity w-20 flex flex-col items-center justify-center align-left">
-                      <button onClick={()=>actionSetItemQuantity(i)} className='w-1/3'><SlArrowUp /></button>
+                    <div className="quantity w-20 flex flex-col items-center justify-center align-center">
+                      <button onClick={()=>actionSetItemQuantity(i)} className='w-1/3 flex justify-center'><SlArrowUp /></button>
                       {/* <div className='w-1/3'> */}
-                        <input type="text" value={i.qty} className='w-1/3 border bg-red text-center'/>
+                        <p className='text-center w-1/3'>{i.qty}</p>
+                        {/* <input type="text" value={i.qty} className='w-1/3 border bg-red text-center'/> */}
                       {/* </div> */}
-                      <button onClick={()=>actionRemoveItemQuantity(i)} className='w-1/3'><SlArrowDown /></button>
+                      <button onClick={()=>actionRemoveItemQuantity(i)} className='w-1/3 flex justify-center'><SlArrowDown /></button>
                     </div>
                     <div className="total w-1/4">
-                      <p>Rp. 100,000</p>
+                      <p>Rp. {(i.price * i.qty).toLocaleString('en-US')}</p>
                     </div>
                   </div>
                 )
@@ -264,11 +275,11 @@ function App() {
           <div className="border border-separate"></div>
           <div className="flex justify-between">
             <p>Sub Total</p>
-            <p>Rp. 100,000</p>
+            <p>Rp. {subtotal?.toLocaleString('en-US')}</p>
           </div>
           <div className="flex justify-between">
             <p>PPN(5%)</p>
-            <p>Rp. 50,000</p>
+            <p>Rp. {ppn?.toLocaleString('en-US')}</p>
           </div>
           <div className="flex justify-between">
             <p>Total</p>
