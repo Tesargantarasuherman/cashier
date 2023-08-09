@@ -13,6 +13,7 @@ function App() {
   const [item, setItem] = useState([])
   const [subtotal,setSubtotal] = useState(0)
   const [ppn,setPpn] = useState(0)
+  const [total,setTotal] = useState(0)
 
   let products = [
     {
@@ -283,7 +284,7 @@ function App() {
           </div>
           <div className="flex justify-between">
             <p>Total</p>
-            <p>Rp. 105,000</p>
+            <p>Rp.{(subtotal + ppn).toLocaleString('en-US')}</p>
           </div>
         </div>
       </div>
