@@ -1,90 +1,94 @@
-import logo from './logo.svg';
 import './App.css';
-import { HiOutlineBuildingStorefront } from 'react-icons/hi2'
-import { LuHistory, LuLogOut, LuSettings, LuClipboardList, LuSearch } from 'react-icons/lu'
-import { TbChartPie } from 'react-icons/tb'
+import { LuSearch } from 'react-icons/lu'
+import { TbBottleFilled } from 'react-icons/tb'
 import { useEffect, useState } from 'react';
 import { AiOutlineFire } from 'react-icons/ai'
-import { TiFlowParallel } from 'react-icons/ti'
-import {SlArrowUp,SlArrowDown} from 'react-icons/sl'
+import { SlArrowUp, SlArrowDown } from 'react-icons/sl'
+import { IoFastFoodOutline } from 'react-icons/io5'
+import { Sidebar } from './components';
+
 function App() {
-  const [active, setActive] = useState(null)
-  const [product, setProduct] = useState([])
   const [item, setItem] = useState([])
-  const [subtotal,setSubtotal] = useState(0)
-  const [ppn,setPpn] = useState(0)
-  const [total,setTotal] = useState(0)
+  const [product, setProduct] = useState([])
+  const [subtotal, setSubtotal] = useState(0)
+  const [ppn, setPpn] = useState(0)
 
   let products = [
     {
       id: 1,
       name: "Chicken Roasted With Peanut Sauce",
       price: 50000,
-      stock:10
+      stock: 10,
+      category_id: 1,
+      image:'https://img.freepik.com/free-photo/baked-chicken-wings-asian-style-tomatoes-sauce-plate_2829-10657.jpg?w=2000&t=st=1691486190~exp=1691486790~hmac=57b5e5f0d9431f1976ed01270df85ca08a576b24a53972bd1078166b4c72a511'
     },
     {
       id: 2,
       name: "Beef Roasted With Peanut Sauce",
       price: 80000,
-      stock:5
+      stock: 5,
+      category_id: 1,
+      image:'https://img.freepik.com/free-photo/grilled-beef-steak-dark-wooden-surface_1150-44344.jpg?w=2000&t=st=1691593787~exp=1691594387~hmac=265aec9fb6d9512bf3bef81c017438c08491b86cf370cb9925d2326c0542dc65'
+    },
+    {
+      id: 3,
+      name: "Ice Lemon Tea",
+      price: 10000,
+      stock: 5,
+      category_id: 2,
+      image:'https://img.freepik.com/free-photo/refreshing-drink_144627-20873.jpg?w=2000&t=st=1691593114~exp=1691593714~hmac=d1dba35b642eb14dc90444f0dcbcc0268a205365b18bd7a56adca24fd758163f'
+    }
+  ]
+  let list_category = [
+    {
+      id: 1,
+      name: 'Food',
+    },
+    {
+      id: 2,
+      name: 'Drink',
     }
   ]
 
   useEffect(() => {
+
+    setProduct(products);
+
     let total = 0;
-    item.map(i=>{
+
+    item.map(i => {
       total += i.qty * i.price
     })
+
     setSubtotal(total)
     setPpn(total * 0.05)
 
-  }, [active,item])
+  }, [item])
 
-  const renderActive = (param) => {
-    if (active == param) {
-      return 'bg-pink-700 text-white'
-    }
-  }
-  // {
-  //   if(i?.id === data.id){
-  //     setItem(
-  //        i?.id === data.id ? {
-  //         name:data.name,
-  //         id:data.id,
-  //         name:data.name,
-  //         price:data.price,
-  //         qty: i.qty +1
-  //       }:i
-  //     )
-  //     console.log('this',item);
-  //   }
-  //   else{
-  //     console.log('here',item);
-  //     setItem([...item,data_])
-  //   }
-  // }
+ 
+
   const actionSetItem = (data) => {
     let data_ = {
       name: data.name,
       id: data.id,
       name: data.name,
       price: data.price,
-      qty:1
-    } 
-    if(item.length > 0 ){
+      image:data.image,
+      qty: 1
+    }
+    if (item.length > 0) {
       let i = item.filter(element => {
         return element.id == data.id
       });
-      if(i.length > 0){
+      if (i.length > 0) {
         actionSetItemQuantity(data)
       }
-      else{
-        setItem([...item,data_])
+      else {
+        setItem([...item, data_])
       }
     }
-    else{
-      console.log('dijalankan')
-      setItem([...item,data_])
+    else {
+      setItem([...item, data_])
     }
   }
   const actionSetItemQuantity = (data) => {
@@ -92,7 +96,7 @@ function App() {
       if (item.id === data.id) {
         const updatedItem = {
           ...item,
-          qty: item.qty +1,
+          qty: item.qty + 1,
         };
 
         return updatedItem;
@@ -104,10 +108,10 @@ function App() {
   const actionRemoveItemQuantity = (data) => {
     const newList = item.map((item) => {
       if (item.id === data.id) {
-        if(item.qty >= 1 ){
+        if (item.qty >= 1) {
           const updatedItem = {
             ...item,
-            qty: item.qty -1,
+            qty: item.qty - 1,
           };
           return updatedItem;
         }
@@ -117,104 +121,82 @@ function App() {
     })
     setItem(newList);
   }
+  const searchProduct = (data) => {
+    if (data != "") {
+      let p = product.filter(element => {
+        return element.name == data
+      });
+      console.log(p, data)
+      if (p.length > 0) {
+        setProduct(p)
+      }
+      else {
+        setProduct([])
+      }
+    }
+    else {
+      setProduct(products)
+    }
+  }
+  const renderIconCategory = (param) => {
+    switch (param) {
+      case 1:
+        return <IoFastFoodOutline size={24} />
+        break;
+      case 2:
+        return <TbBottleFilled size={24} />
+        break;
+      default:
+        return <AiOutlineFire size={24} />
+    }
+  }
+  const sortByCategory =(param)=>{
+    if(param != ""){
+      let p = products.filter(element => {
+        return element.category_id === param
+      });
+      if (p.length > 0) {
+        setProduct(p)
+      }
+      else {
+        setProduct([])
+      }
+    }
+    else{
+      setProduct(products)
+    }
+  }
   return (
     <div className="w-full h-screen flex">
       {/* sidebar */}
-      <div className="flex-initial w-32 bg-white flex flex-col justify-around">
-        <div className="logo flex-initial h-32 text-center">
-          LOGO
-        </div>
-        <div className="flex flex-col gap-8 justify-center">
-          <div className={`flex-initial h-20 mx-6 flex hover:bg-pink-700 hover:text-white justify-center items-center flex-col hover:cursor-pointer  rounded-xl ${renderActive(1)}`} onClick={() => setActive(1)}>
-            <HiOutlineBuildingStorefront size={24} />
-            <p className='text-inherit text-xs'>Home</p>
-          </div>
-          <div className={`flex-initial h-20 mx-6 flex hover:bg-pink-700 hover:text-white justify-center items-center flex-col hover:cursor-pointer  rounded-xl ${renderActive(2)}`} onClick={() => setActive(2)}>
-            <TbChartPie size={24} />
-            <p className='text-inherit text-xs'>Dashboard</p>
-          </div>
-          <div className={`flex-initial h-20 mx-6 flex hover:bg-pink-700 hover:text-white justify-center items-center flex-col hover:cursor-pointer  rounded-xl ${renderActive(3)}`} onClick={() => setActive(3)}>
-            <LuHistory size={24} />
-            <p className='text-inherit text-xs'>History</p>
-          </div>
-          <div className={`flex-initial h-20 mx-6 flex hover:bg-pink-700 hover:text-white justify-center items-center flex-col hover:cursor-pointer  rounded-xl ${renderActive(4)}`} onClick={() => setActive(4)}>
-            <LuClipboardList size={24} />
-            <p className='text-inherit text-xs'>Bills</p>
-          </div>
-          <div className={`flex-initial h-20 mx-6 flex hover:bg-pink-700 hover:text-white justify-center items-center flex-col hover:cursor-pointer  rounded-xl ${renderActive(5)}`} onClick={() => setActive(5)}>
-            <LuSettings size={24} />
-            <p className='text-inherit text-xs'>Settings</p>
-          </div>
-        </div>
-        <div className='w-full h-12 bg-red flex justify-center align-midde items-center flex-col hover:cursor-pointer'>
-          <LuLogOut size={24} />
-          <p className='text-inherit text-xs'>Logout</p>
-        </div>
-      </div>
+      <Sidebar />
       {/* end sidebar */}
       <div className="flex-auto bg-slate-50 p-10">
         <div className="flex justify-between pb-6">
           <p className='text-xl text-slate-600 uppercase'>Category</p>
-
         </div>
         {/* Category */}
-        <div className='flex justify-between gap-6'>
-          {/* card */}
-          <div className="flex flex-col justify-center bg-orange-300 w-24 h-32 rounded-xl pb-2 hover:cursor-pointer">
+        <div className='flex justify-start gap-6'>
+          <div className="flex flex-col justify-center bg-orange-300 w-24 h-32 rounded-xl pb-2 hover:cursor-pointer" onClick={()=>sortByCategory("")} >
             <div className="bg-white flex-1 h-42 flex justify-center items-center m-2 rounded-xl">
-              <TiFlowParallel size={24} />
+              {
+                renderIconCategory()
+              }
             </div>
             <p className='text-center'>All</p>
           </div>
-          {/* end card */}
-          {/* card */}
-          <div className="flex flex-col justify-center border border-slate-300 w-24 h-32 rounded-xl pb-2 hover:cursor-pointer">
-            <div className="bg-white flex-1 h-42 flex justify-center items-center m-2 rounded-xl">
-              <AiOutlineFire size={24} />
-            </div>
-            <p className='text-center text-slate-400'>Burger</p>
-          </div>
-          {/* end card */}
-          {/* card */}
-          <div className="flex flex-col justify-center border border-slate-300 w-24 h-32 rounded-xl pb-2 hover:cursor-pointer">
-            <div className="bg-white flex-1 h-42 flex justify-center items-center m-2 rounded-xl">
-              <AiOutlineFire size={24} />
-            </div>
-            <p className='text-center text-slate-400'>Pizza</p>
-          </div>
-          {/* end card */}
-          {/* card */}
-          <div className="flex flex-col justify-center border border-slate-300 w-24 h-32 rounded-xl pb-2 hover:cursor-pointer">
-            <div className="bg-white flex-1 h-42 flex justify-center items-center m-2 rounded-xl">
-              <AiOutlineFire size={24} />
-            </div>
-            <p className='text-center text-slate-400'>Snack</p>
-          </div>
-          {/* end card */}
-          {/* card */}
-          <div className="flex flex-col justify-center border border-slate-300 w-24 h-32 rounded-xl pb-2 hover:cursor-pointer">
-            <div className="bg-white flex-1 h-42 flex justify-center items-center m-2 rounded-xl">
-              <AiOutlineFire size={24} />
-            </div>
-            <p className='text-center text-slate-400'>Soft Drink</p>
-          </div>
-          {/* end card */}
-          {/* card */}
-          <div className="flex flex-col justify-center border border-slate-300 w-24 h-32 rounded-xl pb-2 hover:cursor-pointer">
-            <div className="bg-white flex-1 h-42 flex justify-center items-center m-2 rounded-xl">
-              <AiOutlineFire size={24} />
-            </div>
-            <p className='text-center text-slate-400'>Coffee</p>
-          </div>
-          {/* end card */}
-          {/* card */}
-          <div className="flex flex-col justify-center border border-slate-300 w-24 h-32 rounded-xl pb-2 hover:cursor-pointer">
-            <div className="bg-white flex-1 h-42 flex justify-center items-center m-2 rounded-xl">
-              <AiOutlineFire size={24} />
-            </div>
-            <p className='text-center text-slate-400'>Ice Cream</p>
-          </div>
-          {/* end card */}
+          {
+            list_category.map(l => (
+              <div onClick={()=>sortByCategory(l.id)} className="flex flex-col justify-center bg-orange-300 w-24 h-32 rounded-xl pb-2 hover:cursor-pointer">
+                <div className="bg-white flex-1 h-42 flex justify-center items-center m-2 rounded-xl">
+                  {
+                    renderIconCategory(l.id)
+                  }
+                </div>
+                <p className='text-center'>{l.name}</p>
+              </div>
+            ))
+          }
         </div>
         {/* end category */}
         <div className="mt-6">
@@ -222,21 +204,25 @@ function App() {
             <p className='text-xl text-slate-600 uppercase my-6'>Choose order</p>
             <div className="flex h-10 p-2 justify-start bg-white items-center gap-3 rounded-lg">
               <LuSearch size={24} className='text-slate-500' />
-              <input type="text" className='outline-none text-slate-500 flex-initial lg:w-56' placeholder='Search...' />
+              <input type="text" className='outline-none text-slate-500 flex-initial lg:w-56' placeholder='Search...' onChange={(e) => searchProduct(e.target.value)} />
             </div>
           </div>
           <div className="flex justify-start gap-4">
             {/* card orders */}
             {
-              products.map(p => (
-                <div onClick={() => actionSetItem(p)} className="hover:cursor-pointer p-2 hover:bg-orange-200 flex flex-initial w-56 h-72 border border-slate-300 rounded-xl justify-center flex-col overflow-hidden">
-                  <img className='flex-1 rounded-t-xl' src="https://img.freepik.com/free-photo/baked-chicken-wings-asian-style-tomatoes-sauce-plate_2829-10657.jpg?w=2000&t=st=1691486190~exp=1691486790~hmac=57b5e5f0d9431f1976ed01270df85ca08a576b24a53972bd1078166b4c72a511" alt="" srcset="" />
-                  <div className="description flex-initial h-24 text-center">
-                    <p className='text-lg font-thin text-slate-500'>{p.name}</p>
-                    <p className='font-bold text-slate-500'>Rp. {p.price}</p>
+              product?.length > 0 ? (
+                product?.map(p => (
+                  <div onClick={() => actionSetItem(p)} className="hover:cursor-pointer p-2 hover:bg-orange-200 flex flex-initial w-56 h-72 border border-slate-300 rounded-xl justify-between flex-col overflow-hidden">
+                    <img className='flex-1 rounded-t-xl' src={p.image} alt="" srcset="" />
+                    <div className="description flex-initial h-24 text-center">
+                      <p className='text-lg font-thin text-slate-500'>{p.name}</p>
+                      <p className='font-bold text-slate-500'>Rp. {p.price}</p>
+                    </div>
                   </div>
-                </div>
-              ))
+                ))
+              ) : (
+                <p>tidak ada data</p>
+              )
             }
 
             {/* end card orders */}
@@ -248,21 +234,21 @@ function App() {
           <p className='text-xl text-slate-600 uppercase mb-6'>Order Menu</p>
           {
             item?.map(i => {
-              if(i.qty >= 1){
+              if (i.qty >= 1) {
                 return (
                   <div className="flex justify-between items-center mb-6 gap-2">
-                    <img className='flex-initial w-20 rounded-xl' src="https://img.freepik.com/free-photo/baked-chicken-wings-asian-style-tomatoes-sauce-plate_2829-10657.jpg?w=2000&t=st=1691486190~exp=1691486790~hmac=57b5e5f0d9431f1976ed01270df85ca08a576b24a53972bd1078166b4c72a511" alt="" srcset="" />
+                    <img className='flex-initial w-20 rounded-xl' src={i.image} alt="" srcset="" />
                     <div className="name w-1/2">
                       <p>{i.name}</p>
                       <p>Rp. {i?.price?.toLocaleString('en-US')}</p>
                     </div>
                     <div className="quantity w-20 flex flex-col items-center justify-center align-center">
-                      <button onClick={()=>actionSetItemQuantity(i)} className='w-1/3 flex justify-center'><SlArrowUp /></button>
+                      <button onClick={() => actionSetItemQuantity(i)} className='w-1/3 flex justify-center'><SlArrowUp /></button>
                       {/* <div className='w-1/3'> */}
-                        <p className='text-center w-1/3'>{i.qty}</p>
-                        {/* <input type="text" value={i.qty} className='w-1/3 border bg-red text-center'/> */}
+                      <p className='text-center w-1/3'>{i.qty}</p>
+                      {/* <input type="text" value={i.qty} className='w-1/3 border bg-red text-center'/> */}
                       {/* </div> */}
-                      <button onClick={()=>actionRemoveItemQuantity(i)} className='w-1/3 flex justify-center'><SlArrowDown /></button>
+                      <button onClick={() => actionRemoveItemQuantity(i)} className='w-1/3 flex justify-center'><SlArrowDown /></button>
                     </div>
                     <div className="total w-1/4">
                       <p>Rp. {(i.price * i.qty).toLocaleString('en-US')}</p>
@@ -270,7 +256,7 @@ function App() {
                   </div>
                 )
               }
-              
+
             })
           }
           <div className="border border-separate"></div>
