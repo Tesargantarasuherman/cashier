@@ -1,27 +1,26 @@
 
 import React, { Fragment, useEffect,useState } from 'react'
 import { BrowserRouter, Navigate, Route, Routes, useNavigate } from "react-router-dom";
-import { Sidebar } from '../../components';
-
+import { Rightbar, Sidebar } from '../../components';
+import routes from '../../routes/index';
 
 const Main = (props) => {
 
     return (
         <>
-        <ToastContainer />
             {/* Navbar ----------------------------- */}
-            <Routes>
+            {/* <Routes>
                 {routes.map((route) => {
                     if (route.navbar)
                         return <Route path={route.path} element={<Navbar />} />;
                 })}
-            </Routes>
-            <Routes>
+            </Routes> */}
+            {/* <Routes>
                 {routes.map((route) => {
                     if (route.bannerRegion)
                         return <Route path={route.path} element={<BannerRegion/>} />;
                 })}
-            </Routes>
+            </Routes> */}
 
             {/* ---------------------------------- */}
             {/* Render Sidebar */}
@@ -33,12 +32,20 @@ const Main = (props) => {
                 })}
             </Routes>
 
+
             {/* Render Page */}
             <Routes>
                 {routes.map((route) => {
                     return <Route path={route.path} element={
                         route.component
                     } />
+                })}
+            </Routes>
+            {/* Right bar */}
+            <Routes>
+                {routes.map((route) => {
+                    if (route.rightbar)
+                        return <Route path={route.path} element={route.componentRightbar} />;
                 })}
             </Routes>
             </div>

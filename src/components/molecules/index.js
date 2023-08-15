@@ -1,3 +1,5 @@
+import Rightbar from "./Rightbar";
+
 const { default: Sidebar } = require("./Sidebar");
 
-export {Sidebar}
+export {Sidebar,Rightbar}

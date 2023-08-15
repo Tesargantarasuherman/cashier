@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { HiOutlineBuildingStorefront } from 'react-icons/hi2'
 import { LuHistory, LuLogOut, LuSettings, LuClipboardList} from 'react-icons/lu'
 import { TbChartPie} from 'react-icons/tb'
+import { Link } from 'react-router-dom'
 
 function Sidebar(){
 
@@ -18,14 +19,14 @@ function Sidebar(){
           LOGO
         </div>
         <div className="flex flex-col gap-8 justify-center">
-          <div className={`flex-initial h-20 mx-6 flex hover:bg-pink-700 hover:text-white justify-center items-center flex-col hover:cursor-pointer  rounded-xl ${renderActive(1)}`} onClick={() => setActive(1)}>
+          <Link to="/" className={`flex-initial h-20 mx-6 flex hover:bg-pink-700 hover:text-white justify-center items-center flex-col hover:cursor-pointer  rounded-xl ${renderActive(1)}`} onClick={() => setActive(1)}>
             <HiOutlineBuildingStorefront size={24} />
             <p className='text-inherit text-xs'>Home</p>
-          </div>
-          <div className={`flex-initial h-20 mx-6 flex hover:bg-pink-700 hover:text-white justify-center items-center flex-col hover:cursor-pointer  rounded-xl ${renderActive(2)}`} onClick={() => setActive(2)}>
+          </Link>
+          <Link to="/dashboard" className={`flex-initial h-20 mx-6 flex hover:bg-pink-700 hover:text-white justify-center items-center flex-col hover:cursor-pointer  rounded-xl ${renderActive(2)}`} onClick={() => setActive(2)}>
             <TbChartPie size={24} />
             <p className='text-inherit text-xs'>Dashboard</p>
-          </div>
+          </Link>
           <div className={`flex-initial h-20 mx-6 flex hover:bg-pink-700 hover:text-white justify-center items-center flex-col hover:cursor-pointer  rounded-xl ${renderActive(3)}`} onClick={() => setActive(3)}>
             <LuHistory size={24} />
             <p className='text-inherit text-xs'>History</p>
