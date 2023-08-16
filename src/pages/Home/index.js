@@ -10,8 +10,7 @@ import {actionRemoveItemQuantityBasket, actionSetItembasket, actionUpdateItemQua
 function Home() {
     let item = useSelector(selectItem)
     const [product, setProduct] = useState(useSelector(selectProduct))
-    const [subtotal, setSubtotal] = useState(0)
-    const [ppn, setPpn] = useState(0)
+    const [activeCategory,setActiveCategory] = useState(1)
     const dispatch = useDispatch()
     
     let products = [
@@ -20,7 +19,7 @@ function Home() {
         name: "Chicken Roasted With Peanut Sauce",
         price: 50000,
         stock: 10,
-        category_id: 1,
+        category_id: 2,
         image:'https://img.freepik.com/free-photo/baked-chicken-wings-asian-style-tomatoes-sauce-plate_2829-10657.jpg?w=2000&t=st=1691486190~exp=1691486790~hmac=57b5e5f0d9431f1976ed01270df85ca08a576b24a53972bd1078166b4c72a511'
       },
       {
@@ -28,7 +27,7 @@ function Home() {
         name: "Beef Roasted With Peanut Sauce",
         price: 80000,
         stock: 5,
-        category_id: 1,
+        category_id: 2,
         image:'https://img.freepik.com/free-photo/grilled-beef-steak-dark-wooden-surface_1150-44344.jpg?w=2000&t=st=1691593787~exp=1691594387~hmac=265aec9fb6d9512bf3bef81c017438c08491b86cf370cb9925d2326c0542dc65'
       },
       {
@@ -36,33 +35,27 @@ function Home() {
         name: "Ice Lemon Tea",
         price: 10000,
         stock: 5,
-        category_id: 2,
+        category_id: 3,
         image:'https://img.freepik.com/free-photo/refreshing-drink_144627-20873.jpg?w=2000&t=st=1691593114~exp=1691593714~hmac=d1dba35b642eb14dc90444f0dcbcc0268a205365b18bd7a56adca24fd758163f'
       }
     ]
     let list_category = [
       {
         id: 1,
-        name: 'Food',
+        name: 'All',
       },
       {
         id: 2,
+        name: 'Food',
+      },
+      {
+        id: 3,
         name: 'Drink',
       }
     ]
 
     useEffect(() => {
       dispatch(getAllProduct())
-  
-      let total = 0;
-  
-      item.map(i => {
-        total += i.qty * i.price
-      })
-  
-      setSubtotal(total)
-      setPpn(total * 0.05)
-  
     }, [item])
   
    
@@ -78,24 +71,12 @@ function Home() {
         }))
     }
 
-    const actionSetItemQuantity = (data) => {
-        dispatch(actionUpdateItemQuantityBasket({
-            id: data.id,
-        }))
-    }
-
-    const actionRemoveItemQuantity = (data) => {
-        dispatch(actionRemoveItemQuantityBasket({
-            id: data.id,
-        }))
-    }
 
     const searchProduct = (data) => {
       if (data != "") {
         let p = product.filter(element => {
           return element.name == data
         });
-        console.log(p, data)
         if (p.length > 0) {
           setProduct(p)
         }
@@ -122,7 +103,8 @@ function Home() {
     }
 
     const sortByCategory =(param)=>{
-      if(param != ""){
+    setActiveCategory(param)
+      if(param != 1){
         let p = products.filter(element => {
           return element.category_id === param
         });
@@ -137,6 +119,11 @@ function Home() {
         setProduct(products)
       }
     }
+    const setActiveButtonCategory =(param)=>{
+        list_category.filter(cat=>{
+            return cat == param
+        })
+    }
     
   return (
   <>
@@ -146,17 +133,17 @@ function Home() {
         </div>
         {/* Category */}
         <div className='flex justify-start gap-6'>
-          <div className="flex flex-col justify-center bg-orange-300 w-24 h-32 rounded-xl pb-2 hover:cursor-pointer" onClick={()=>sortByCategory("")} >
+          {/* <div className="flex flex-col justify-center bg-slate-200 w-24 h-32 rounded-xl pb-2 hover:cursor-pointer" onClick={()=>sortByCategory("")} >
             <div className="bg-white flex-1 h-42 flex justify-center items-center m-2 rounded-xl">
               {
                 renderIconCategory()
               }
             </div>
             <p className='text-center'>All</p>
-          </div>
+          </div> */}
           {
             list_category.map(l => (
-              <div onClick={()=>sortByCategory(l.id)} className="flex flex-col justify-center bg-orange-300 w-24 h-32 rounded-xl pb-2 hover:cursor-pointer">
+              <div onClick={()=>sortByCategory(l.id)} className={`flex flex-col justify-center ${activeCategory == l.id ?'bg-orange-400':'bg-slate-200'}  w-24 h-32 rounded-xl pb-2 hover:cursor-pointer`}>
                 <div className="bg-white flex-1 h-42 flex justify-center items-center m-2 rounded-xl">
                   {
                     renderIconCategory(l.id)
