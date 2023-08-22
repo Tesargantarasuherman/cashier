@@ -25,7 +25,8 @@ function Checkout() {
                 item:item,
                 subtotal:subtotal,
                 ppn:ppn,
-                total:subtotal + ppn
+                total:subtotal + ppn,
+                date: new Date().toLocaleString()
             }))
             dispatch(actionSetItembasket(null))
             navigate('/')
@@ -84,7 +85,7 @@ function Checkout() {
           </div>
           {
             item.length > 0 ? (
-                <button onClick={setOrder} className='flex align-middle items-center rounded-md w-full mt-4 justify-center text-center h-10 bg-orange-200 ' >Checkout</button>
+                <button onClick={setOrder} className='flex align-middle items-center rounded-md w-full mt-4 justify-center text-center h-10 bg-orange-200 ' >Konfirmasi Pembayaran</button>
             ):
             (
                 null

@@ -27,10 +27,10 @@ function Sidebar(){
             <TbChartPie size={24} />
             <p className='text-inherit text-xs'>Dashboard</p>
           </Link>
-          <div className={`flex-initial h-20 mx-6 flex hover:bg-pink-700 hover:text-white justify-center items-center flex-col hover:cursor-pointer  rounded-xl ${renderActive(3)}`} onClick={() => setActive(3)}>
+          <Link to="/history" className={`flex-initial h-20 mx-6 flex hover:bg-pink-700 hover:text-white justify-center items-center flex-col hover:cursor-pointer  rounded-xl ${renderActive(3)}`} onClick={() => setActive(3)}>
             <LuHistory size={24} />
             <p className='text-inherit text-xs'>History</p>
-          </div>
+          </Link>
           <div className={`flex-initial h-20 mx-6 flex hover:bg-pink-700 hover:text-white justify-center items-center flex-col hover:cursor-pointer  rounded-xl ${renderActive(4)}`} onClick={() => setActive(4)}>
             <LuClipboardList size={24} />
             <p className='text-inherit text-xs'>Bills</p>

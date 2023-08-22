@@ -1,5 +1,5 @@
 import { Rightbar } from "../../components";
-import { Dashboard, Home} from "../../pages";
+import { Dashboard, Home, OrderHistory} from "../../pages";
 import Checkout from "../../pages/Dashboard/Checkout";
 
 const root = "/";
@@ -27,7 +27,13 @@ const admin = [
         rightbar:true,
         is_login_access:true,
         componentRightbar:<Checkout/>
-    }
+    },
+    {
+        path: `${root}/history`,
+        component: <OrderHistory/>,
+        sidebar: true,
+        is_login_access:true,
+    },
 ];
 
 export default admin;

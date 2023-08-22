@@ -1,9 +1,8 @@
-import React from 'react'
-import { useEffect, useState } from 'react';
-import { SlArrowUp, SlArrowDown } from 'react-icons/sl'
+import React, { useEffect } from 'react';
+import { SlArrowDown, SlArrowUp } from 'react-icons/sl';
 import { useDispatch, useSelector } from 'react-redux';
-import { actionRemoveItemQuantityBasket, actionSetPpn, actionSetSubtotal, actionUpdateItemQuantityBasket, selectItem, selectPpn, selectSubtotal } from '../../features/productSlice'
 import { Link } from 'react-router-dom';
+import { actionRemoveItemQuantityBasket, actionSetPpn, actionSetSubtotal, actionUpdateItemQuantityBasket, selectItem, selectPpn, selectSubtotal } from '../../features/productSlice';
 
 function Rightbar() {
   let item = useSelector(selectItem)
@@ -81,6 +80,14 @@ function Rightbar() {
                   <p>Total</p>
                   <p>Rp.{(subtotal + ppn).toLocaleString('en-US')}</p>
                 </div>
+                {/* <div className='flex justify-between items-center'>
+                  <div class="bg-cover bg-center w-28 h-16" style={{backgroundImage: "url('https://logos-world.net/wp-content/uploads/2023/02/GoPay-Logo-500x281.png')"}}>
+                  </div>
+                  <div class="bg-cover bg-center w-28 h-16" style={{backgroundImage: "url('https://logos-world.net/wp-content/uploads/2023/02/GoPay-Logo-500x281.png')"}}>
+                  </div>
+                  <div class="bg-cover bg-center w-28 h-16" style={{backgroundImage: "url('https://logos-world.net/wp-content/uploads/2023/02/GoPay-Logo-500x281.png')"}}>
+                  </div>
+                </div> */}
                 <Link className='flex align-middle items-center rounded-md mt-4 justify-center text-center h-10 bg-orange-200 ' to='/checkout'>Checkout</Link>
               </>
             ) :
@@ -89,6 +96,7 @@ function Rightbar() {
               )
           }
         </div>
+        
 
       </div>
     </>

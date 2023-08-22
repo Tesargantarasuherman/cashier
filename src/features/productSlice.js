@@ -6,7 +6,7 @@ var product = [
       name: "Chicken Roasted With Peanut Sauce",
       price: 50000,
       stock: 10,
-      category_id: 1,
+      category_id: 2,
       image:'https://img.freepik.com/free-photo/baked-chicken-wings-asian-style-tomatoes-sauce-plate_2829-10657.jpg?w=2000&t=st=1691486190~exp=1691486790~hmac=57b5e5f0d9431f1976ed01270df85ca08a576b24a53972bd1078166b4c72a511'
     },
     {
@@ -14,7 +14,7 @@ var product = [
       name: "Beef Roasted With Peanut Sauce",
       price: 80000,
       stock: 5,
-      category_id: 1,
+      category_id: 2,
       image:'https://img.freepik.com/free-photo/grilled-beef-steak-dark-wooden-surface_1150-44344.jpg?w=2000&t=st=1691593787~exp=1691594387~hmac=265aec9fb6d9512bf3bef81c017438c08491b86cf370cb9925d2326c0542dc65'
     },
     {
@@ -22,7 +22,7 @@ var product = [
       name: "Ice Lemon Tea",
       price: 10000,
       stock: 5,
-      category_id: 2,
+      category_id: 3,
       image:'https://img.freepik.com/free-photo/refreshing-drink_144627-20873.jpg?w=2000&t=st=1691593114~exp=1691593714~hmac=d1dba35b642eb14dc90444f0dcbcc0268a205365b18bd7a56adca24fd758163f'
     }
   ]
@@ -69,6 +69,9 @@ export const productSlice = createSlice({
       actionRemoveItemQuantityBasket:(state,action)=>{
         let i = state.item.findIndex(element => element.id == action.payload.id);
         state.item[i].qty -=1 ;
+        if(state.item[i].qty == 0){
+          state.item.splice(i, 1);
+        }
       },
       actionSetSubtotal:(state,action)=>{
         state.subtotal = action.payload.subtotal
@@ -78,6 +81,38 @@ export const productSlice = createSlice({
       },
       actionSetOrders:(state,action)=>{
         state.orders.push(action.payload)
+      },
+      actionSortByCategory:(state,action)=>{
+        if(action.payload.category_id != 1){
+            let p = product.filter(element => {
+              return element.category_id === action.payload.category_id
+            });
+            if (p.length > 0) {
+                state.products = p
+            }
+            else {
+                state.products = []
+            }
+          }
+          else{
+            state.products = product
+          }
+      },
+      actionSearchProduct:(state,action)=>{
+        if (action.payload.name != "") {
+            let p = product.filter(element => 
+                element?.name.toLowerCase().indexOf(action.payload.name) > -1
+            );
+            if (p.length > 0) {
+                state.products = p
+            }
+            else {
+                state.products = []
+            }
+        }
+        else {
+            state.products = product
+        }
       }
     },
   })
@@ -88,12 +123,15 @@ export const productSlice = createSlice({
     actionRemoveItemQuantityBasket,
     actionSetSubtotal,
     actionSetPpn,
-    actionSetOrders
+    actionSetOrders,
+    actionSortByCategory,
+    actionSearchProduct
 } = productSlice.actions
 
 export const selectProduct = (state) => state.product.products;
 export const selectItem = (state) => state.product.item;
 export const selectSubtotal = (state) => state.product.subtotal;
 export const selectPpn = (state) => state.product.ppn;
+export const selectOrders = (state) => state.product.orders;
 
   export default productSlice.reducer
